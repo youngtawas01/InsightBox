@@ -631,7 +631,7 @@ textarea {
 <script type="module">
 // Import your hidden credentials
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-import { SUPABASE_CONFIG } from "config.js";
+import { SUPABASE_CONFIG } from "./config.js";
 
 const supabase = createClient(
   SUPABASE_CONFIG.url,
