@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FeedbackHub - Multi-Organisation Platform</title>
+
+<style>
+* { box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0b0f19;
+  --bg-secondary: #111827;
+  --bg-card: #1a2236;
+  --bg-hover: #232d42;
+  --border: #2d3748;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+header {
+  background: linear-gradient(90deg, #1e1b4b, #312e81);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 24px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 6px;
+  font-size: 15px;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover { background: #059669; }
+
+.btn-secondary { background: var(--bg-hover); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-secondary:hover { background: #2d3748; }
+
+.btn-warning { background: var(--warning); color: #1a1a1a; }
+.btn-warning:hover { background: #d97706; }
+
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: #dc2626; }
+
+.btn-info { background: var(--info); color: white; }
+.btn-info:hover { background: #2563eb; }
+
+.hidden { display: none !important; }
+
+.item {
+  padding: 18px;
+  border-left: 4px solid var(--accent);
+  background: var(--bg-secondary);
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.item:hover {
+  border-left-color: var(--success);
+  background: var(--bg-hover);
+}
+
+.vote-box {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.vote-box button {
+  flex: 1;
+  margin-top: 0;
+}
+
+.status-success { color: var(--success); }
+.status-error { color: var(--danger); }
+.status-info { color: var(--info); }
+.status-warning { color: var(--warning); }
+
+#userInfo {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-director { background: #7c3aed; color: white; }
+.badge-admin { background: var(--warning); color: #1a1a1a; }
+.badge-staff { background: var(--info); color: white; }
+.badge-announcement { background: var(--warning); color: #1a1a1a; }
+.badge-pending { background: #374151; color: #fbbf24; }
+.badge-approved { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+.badge-resolved { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+.badge-rejected { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+.badge-flagged { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+
+.filter-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-tabs button {
+  flex: 1;
+  min-width: 100px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.filter-tabs button.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.filter-tabs button:hover:not(.active) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 18px 0;
+}
+
+h2, h3 {
+  margin-top: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+h2 { font-size: 20px; margin-bottom: 8px; }
+h3 { font-size: 17px; margin-bottom: 6px; }
+
+.org-header {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.org-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.org-header span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  background: var(--bg-secondary);
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.stat-box .number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-box .label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+
+.user-row button {
+  width: auto;
+  padding: 8px 16px;
+  margin-top: 0;
+  font-size: 13px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--bg-card);
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.modal h3 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  flex: 1;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+}
+
+.empty-state svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.toggle-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.toggle-section button {
+  width: auto;
+  padding: 10px 24px;
+}
+
+.department-tag {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+select {
+  cursor: pointer;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.reply-box {
+  background: var(--bg-primary);
+  padding: 14px;
+  border-radius: 10px;
+  margin-top: 12px;
+  border: 1px solid var(--border);
+}
+
+.reply-box textarea {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.action-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.action-row button {
+  flex: 1;
+  min-width: 120px;
+  margin-top: 0;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.org-selector {
+  margin-bottom: 16px;
+}
+
+.org-selector label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<header id="mainHeader">FeedbackHub - Organisation Portal</header>
+
+<div class="container">
+
+<!-- ================= AUTH SCREEN ================= -->
+<div id="authSection" class="card">
+  <div class="toggle-section">
+    <button class="btn-primary active" id="tabLogin" onclick="showAuthTab('login')">Organisation Login</button>
+    <button class="btn-secondary" id="tabCreate" onclick="showAuthTab('create')">Create Organisation</button>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div id="loginForm">
+    <h2 style="text-align:center; margin-bottom:8px;">Welcome Back</h2>
+    <p style="text-align:center; color:var(--text-muted); margin-bottom:24px; font-size:14px;">
+      Enter your organisation credentials
+    </p>
+    
+    <div class="org-selector">
+      <label>Select Organisation</label>
+      <select id="orgSelectLogin">
+        <option value="">-- Choose your organisation --</option>
+      </select>
+    </div>
+    
+    <input type="text" id="loginUsername" placeholder="Username">
+    <input type="password" id="loginPassword" placeholder="Password">
+    
+    <div id="authStatus" style="margin-top:12px; font-size:14px; text-align:center; min-height:24px;"></div>
+    
+    <button class="btn-primary" onclick="login()">Login</button>
+  </div>
+
+  <!-- CREATE ORG FORM -->
+  <div id="createForm" class="hidden">
+    <h2 style="text-align:center; margin-bottom:8px;">Create Organisation</h2>
+    <p style="text-align:center; color:var(--text-muted); margin-bottom:24px; font-size:14px;">
+      You'll become the Director automatically
+    </p>
+    
+    <input type="text" id="orgName" placeholder="Organisation Name">
+    <input type="text" id="orgSlug" placeholder="Organisation ID (unique, no spaces)">
+    <input type="text" id="directorName" placeholder="Your Full Name">
+    <input type="text" id="directorUsername" placeholder="Director Username">
+    <input type="password" id="directorPassword" placeholder="Director Password (min 6 chars)">
+    <input type="password" id="directorPasswordConfirm" placeholder="Confirm Password">
+    
+    <div id="createStatus" style="margin-top:12px; font-size:14px; text-align:center; min-height:24px;"></div>
+    
+    <button class="btn-success" onclick="createOrganisation()">Create Organisation & Become Director</button>
+  </div>
+</div>
+
+<!-- ================= STAFF DASHBOARD ================= -->
+<div id="staffDashboard" class="hidden">
+
+  <div class="org-header">
+    <div>
+      <h2 id="staffOrgName">Organisation</h2>
+      <span id="staffOrgId">org-id</span>
+    </div>
+    <div style="text-align:right;">
+      <div id="staffUserInfo" style="font-size:14px; color:var(--text-secondary);">
+        Logged in as <b id="staffUsername"></b> <span class="badge badge-staff">Staff</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📝 Submit Feedback</h2>
+    <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
+      All feedback is private and visible only to your organisation's administrators.
+    </p>
+    
+    <select id="feedbackDepartment">
+      <option value="">-- Select Department --</option>
+      <option value="General">General</option>
+      <option value="HR">Human Resources</option>
+      <option value="IT">IT / Technical</option>
+      <option value="Finance">Finance</option>
+      <option value="Operations">Operations</option>
+      <option value="Management">Management</option>
+      <option value="Other">Other</option>
+    </select>
+    
+    <textarea id="feedbackMessage" placeholder="Describe your complaint, suggestion, or concern..."></textarea>
+
+    <div id="staffStatus" style="margin-bottom:12px; min-height:24px;"></div>
+
+    <div class="action-row">
+      <button class="btn-primary" onclick="sendFeedback('complaint')">Submit Complaint</button>
+      <button class="btn-success" onclick="sendFeedback('suggestion')">Submit Suggestion</button>
+    </div>
+    <button class="btn-secondary" onclick="logout()" style="margin-top:10px;">Logout</button>
+  </div>
+
+  <div class="card">
+    <h2>📨 My Feedback History</h2>
+    <div id="staffList"></div>
+  </div>
+
+</div>
+
+<!-- ================= DIRECTOR / ADMIN PANEL ================= -->
+<div id="adminPanel" class="hidden">
+
+  <div class="org-header">
+    <div>
+      <h2 id="adminOrgName">Organisation</h2>
+      <span id="adminOrgId">org-id</span>
+    </div>
+    <div style="text-align:right;">
+      <div id="adminUserInfo" style="font-size:14px; color:var(--text-secondary);">
+        Logged in as <b id="adminUsername"></b> 
+        <span id="adminRoleBadge" class="badge badge-director">Director</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="number" id="statTotal">0</div>
+      <div class="label">Total</div>
+    </div>
+    <div class="stat-box">
+      <div class="number" id="statPending">0</div>
+      <div class="label">Pending</div>
+    </div>
+    <div class="stat-box">
+      <div class="number" id="statApproved">0</div>
+      <div class="label">Approved</div>
+    </div>
+    <div class="stat-box">
+      <div class="number" id="statResolved">0</div>
+      <div class="label">Resolved</div>
+    </div>
+  </div>
+
+  <!-- Post Announcement -->
+  <div class="card">
+    <h3>📢 Post Announcement</h3>
+    <p style="color:var(--text-muted); font-size:14px; margin-bottom:12px;">
+      Announcements are visible to all staff in your organisation.
+    </p>
+    <textarea id="announcementText" placeholder="Write your announcement..."></textarea>
+    <button class="btn-warning" onclick="postAnnouncement()">Post Announcement</button>
+  </div>
+
+  <!-- User Management (Director Only) -->
+  <div class="card" id="userManagementCard">
+    <h3>👥 User Management</h3>
+    <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">
+      Add administrators or staff members to your organisation.
+    </p>
+    
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+      <input type="text" id="newUserName" placeholder="Full Name" style="margin-top:0;">
+      <input type="text" id="newUserUsername" placeholder="Username" style="margin-top:0;">
+    </div>
+    <input type="password" id="newUserPassword" placeholder="Password (min 6 chars)">
+    <select id="newUserRole">
+      <option value="staff">Staff Member</option>
+      <option value="admin">Administrator</option>
+    </select>
+    
+    <div id="userMgmtStatus" style="margin-bottom:12px; min-height:24px;"></div>
+    
+    <button class="btn-primary" onclick="addUser()">Add User</button>
+    
+    <hr>
+    
+    <h4 style="margin-top:0; color:var(--text-secondary); font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">Organisation Members</h4>
+    <div id="usersList"></div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button class="active" onclick="setFilter('all')" id="filter-all">All</button>
+    <button onclick="setFilter('pending')" id="filter-pending">Pending</button>
+    <button onclick="setFilter('approved')" id="filter-approved">Approved</button>
+    <button onclick="setFilter('resolved')" id="filter-resolved">Resolved</button>
+    <button onclick="setFilter('rejected')" id="filter-rejected">Rejected</button>
+    <button onclick="setFilter('flagged')" id="filter-flagged">Flagged</button>
+  </div>
+
+  <!-- Messages List -->
+  <div id="adminList"></div>
+
+  <button class="btn-secondary" onclick="logout()" style="margin-top:20px;">Logout</button>
+
+</div>
+
+</div>
+
+<!-- Modal for confirmations -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script type="module">
+// Import your hidden credentials
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { SUPABASE_CONFIG } from "config.js";
+
+const supabase = createClient(
+  SUPABASE_CONFIG.url,
+  SUPABASE_CONFIG.anonKey
+);
+
+/* ================= CONFIG ================= */
+const badWords = ["fuck", "shit", "bitch", "damn", "idiot", "stupid", "asshole", "bastard"];
+// ... rest of your code stays exactly the same
+/* ================= CONFIG ================= */
+
+
+/* ================= STATE ================= */
+let currentUser = null;
+let currentOrg = null;
+let currentFilter = 'all';
+let isDirector = false;
+
+/* ================= ELEMENTS ================= */
+const authSection = document.getElementById("authSection");
+const staffDashboard = document.getElementById("staffDashboard");
+const adminPanel = document.getElementById("adminPanel");
+const mainHeader = document.getElementById("mainHeader");
+
+/* ================= AUTH TABS ================= */
+window.showAuthTab = (tab) => {
+  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('createForm').classList.toggle('hidden', tab !== 'create');
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabLogin').classList.toggle('btn-primary', tab === 'login');
+  document.getElementById('tabLogin').classList.toggle('btn-secondary', tab !== 'login');
+  document.getElementById('tabCreate').classList.toggle('active', tab === 'create');
+  document.getElementById('tabCreate').classList.toggle('btn-success', tab === 'create');
+  document.getElementById('tabCreate').classList.toggle('btn-secondary', tab !== 'create');
+};
+
+/* ================= LOAD ORGS FOR LOGIN ================= */
+async function loadOrganisations() {
+  const { data, error } = await supabase.from("organisations").select("id, name, slug").order("name");
+  if (error) { console.error(error); return; }
+  
+  const select = document.getElementById("orgSelectLogin");
+  select.innerHTML = '<option value="">-- Choose your organisation --</option>';
+  data?.forEach(org => {
+    const opt = document.createElement("option");
+    opt.value = org.id;
+    opt.textContent = org.name;
+    select.appendChild(opt);
+  });
+}
+
+/* ================= CREATE ORGANISATION ================= */
+window.createOrganisation = async () => {
+  const orgName = document.getElementById("orgName").value.trim();
+  const orgSlug = document.getElementById("orgSlug").value.trim().toLowerCase().replace(/\\s+/g, '-');
+  const directorName = document.getElementById("directorName").value.trim();
+  const directorUsername = document.getElementById("directorUsername").value.trim().toLowerCase();
+  const password = document.getElementById("directorPassword").value;
+  const passwordConfirm = document.getElementById("directorPasswordConfirm").value;
+  
+  const statusEl = document.getElementById("createStatus");
+  
+  if (!orgName || !orgSlug || !directorName || !directorUsername || !password) {
+    showStatus(statusEl, "❌ All fields are required", "error");
+    return;
+  }
+  
+  if (password !== passwordConfirm) {
+    showStatus(statusEl, "❌ Passwords do not match", "error");
+    return;
+  }
+  
+  if (password.length < 6) {
+    showStatus(statusEl, "❌ Password must be at least 6 characters", "error");
+    return;
+  }
+  
+  showStatus(statusEl, "⏳ Creating organisation...", "info");
+  
+  // Check if slug exists
+  const { data: existingOrg } = await supabase.from("organisations").select("id").eq("slug", orgSlug).single();
+  if (existingOrg) {
+    showStatus(statusEl, "❌ Organisation ID already taken", "error");
+    return;
+  }
+  
+  // Check if username exists
+  const { data: existingUser } = await supabase.from("users").select("id").eq("username", directorUsername).single();
+  if (existingUser) {
+    showStatus(statusEl, "❌ Username already taken", "error");
+    return;
+  }
+  
+  // Create organisation
+  const { data: orgData, error: orgError } = await supabase
+    .from("organisations")
+    .insert({ name: orgName, slug: orgSlug })
+    .select()
+    .single();
+    
+  if (orgError) {
+    showStatus(statusEl, "❌ " + orgError.message, "error");
+    return;
+  }
+  
+  // Create director user
+  const { error: userError } = await supabase
+    .from("users")
+    .insert({
+      org_id: orgData.id,
+      name: directorName,
+      username: directorUsername,
+      password_hash: await hashPassword(password),
+      role: "director"
+    });
+    
+  if (userError) {
+    showStatus(statusEl, "❌ " + userError.message, "error");
+    return;
+  }
+  
+  showStatus(statusEl, "✅ Organisation created! You can now login.", "success");
+  
+  // Clear form and switch to login
+  setTimeout(() => {
+    document.getElementById("orgName").value = "";
+    document.getElementById("orgSlug").value = "";
+    document.getElementById("directorName").value = "";
+    document.getElementById("directorUsername").value = "";
+    document.getElementById("directorPassword").value = "";
+    document.getElementById("directorPasswordConfirm").value = "";
+    loadOrganisations();
+    showAuthTab('login');
+  }, 1500);
+};
+
+/* ================= LOGIN ================= */
+window.login = async () => {
+  const orgId = document.getElementById("orgSelectLogin").value;
+  const username = document.getElementById("loginUsername").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+  const statusEl = document.getElementById("authStatus");
+  
+  if (!orgId || !username || !password) {
+    showStatus(statusEl, "❌ Please fill all fields", "error");
+    return;
+  }
+  
+  showStatus(statusEl, "⏳ Authenticating...", "info");
+  
+  const { data: userData, error } = await supabase
+    .from("users")
+    .select("*, organisations(*)")
+    .eq("org_id", orgId)
+    .eq("username", username)
+    .eq("password_hash", await hashPassword(password))
+    .single();
+    
+  if (error || !userData) {
+    showStatus(statusEl, "❌ Invalid username or password", "error");
+    return;
+  }
+  
+  currentUser = userData;
+  currentOrg = userData.organisations;
+  isDirector = userData.role === "director";
+  
+  showStatus(statusEl, "✅ Welcome, " + userData.name + "!", "success");
+  
+  setTimeout(() => {
+    routeUser();
+  }, 800);
+};
+
+/* ================= LOGOUT ================= */
+window.logout = () => {
+  currentUser = null;
+  currentOrg = null;
+  isDirector = false;
+  currentFilter = 'all';
+  location.reload();
+};
+
+/* ================= ROUTING ================= */
+function routeUser() {
+  authSection.classList.add("hidden");
+  
+  if (currentUser.role === "staff") {
+    // Staff dashboard
+    staffDashboard.classList.remove("hidden");
+    document.getElementById("staffOrgName").textContent = currentOrg.name;
+    document.getElementById("staffOrgId").textContent = currentOrg.slug;
+    document.getElementById("staffUsername").textContent = currentUser.name;
+    loadStaffFeedback();
+  } else {
+    // Admin/Director panel
+    adminPanel.classList.remove("hidden");
+    document.getElementById("adminOrgName").textContent = currentOrg.name;
+    document.getElementById("adminOrgId").textContent = currentOrg.slug;
+    document.getElementById("adminUsername").textContent = currentUser.name;
+    
+    const badge = document.getElementById("adminRoleBadge");
+    badge.textContent = isDirector ? "Director" : "Admin";
+    badge.className = "badge " + (isDirector ? "badge-director" : "badge-admin");
+    
+    // Only directors can manage users
+    document.getElementById("userManagementCard").classList.toggle("hidden", !isDirector);
+    
+    loadAdminPanel();
+    loadUsersList();
+    updateStats();
+  }
+}
+
+/* ================= BAD WORD FILTER ================= */
+function containsBadWords(text) {
+  return badWords.some(word => text.toLowerCase().includes(word));
+}
+
+/* ================= STAFF: SEND FEEDBACK ================= */
+window.sendFeedback = async (type) => {
+  const message = document.getElementById("feedbackMessage").value.trim();
+  const department = document.getElementById("feedbackDepartment").value;
+  const statusEl = document.getElementById("staffStatus");
+  
+  if (!department) {
+    showStatus(statusEl, "❌ Please select a department", "error");
+    return;
+  }
+  
+  if (!message) {
+    showStatus(statusEl, "❌ Please write something", "error");
+    return;
+  }
+  
+  if (containsBadWords(message)) {
+    showStatus(statusEl, "❌ Inappropriate language blocked", "error");
+    return;
+  }
+  
+  const { error } = await supabase
+    .from("feedback")
+    .insert({
+      org_id: currentOrg.id,
+      user_id: currentUser.id,
+      user_name: currentUser.name,
+      type,
+      message,
+      department,
+      status: "pending"
+    });
+    
+  if (error) {
+    showStatus(statusEl, "❌ " + error.message, "error");
+    return;
+  }
+  
+  document.getElementById("feedbackMessage").value = "";
+  document.getElementById("feedbackDepartment").value = "";
+  showStatus(statusEl, "✅ Feedback submitted successfully!", "success");
+  
+  loadStaffFeedback();
+};
+
+/* ================= STAFF: LOAD FEEDBACK ================= */
+async function loadStaffFeedback() {
+  const { data, error } = await supabase
+    .from("feedback")
+    .select("*")
+    .eq("org_id", currentOrg.id)
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+    
+  if (error) { console.error(error); return; }
+  
+  const list = document.getElementById("staffList");
+  list.innerHTML = "";
+  
+  if (!data || data.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+        <p>No feedback submitted yet</p>
+      </div>`;
+    return;
+  }
+  
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+        <div>
+          <b style="text-transform:uppercase; font-size:13px; color:var(--accent);">${item.type}</b>
+          <span class="department-tag">${item.department}</span>
+        </div>
+        <span class="badge badge-${item.status}">${item.status}</span>
+      </div>
+      <div style="margin-bottom:12px; line-height:1.6;">${item.message}</div>
+      <div class="timestamp">${formatDate(item.created_at)}</div>
+      ${item.response ? `
+        <div class="reply-box">
+          <b style="color:var(--success); font-size:13px;">💬 Response:</b>
+          <div style="margin-top:6px; color:var(--text-secondary);">${item.response}</div>
+        </div>
+      ` : ''}
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* ================= ADMIN: POST ANNOUNCEMENT ================= */
+window.postAnnouncement = async () => {
+  const text = document.getElementById("announcementText").value.trim();
+  if (!text) return alert("Write something");
+  
+  const { error } = await supabase
+    .from("feedback")
+    .insert({
+      org_id: currentOrg.id,
+      user_id: currentUser.id,
+      user_name: currentUser.name,
+      type: "announcement",
+      message: text,
+      department: "General",
+      status: "approved"
+    });
+    
+  if (error) return alert(error.message);
+  
+  document.getElementById("announcementText").value = "";
+  showModal("Success", "✅ Announcement posted!", () => {
+    loadAdminPanel();
+    updateStats();
+  });
+};
+
+/* ================= ADMIN: FILTER ================= */
+window.setFilter = (filter) => {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-tabs button').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('filter-' + filter).classList.add('active');
+  loadAdminPanel();
+};
+
+/* ================= ADMIN: LOAD PANEL ================= */
+async function loadAdminPanel() {
+  let query = supabase
+    .from("feedback")
+    .select("*")
+    .eq("org_id", currentOrg.id)
+    .order("created_at", { ascending: false });
+    
+  const { data, error } = await query;
+  if (error) { console.error(error); return; }
+  
+  const adminList = document.getElementById("adminList");
+  adminList.innerHTML = "";
+  
+  const filtered = data?.filter(item => {
+    if (currentFilter === 'all') return true;
+    return item.status === currentFilter;
+  }) || [];
+  
+  if (filtered.length === 0) {
+    adminList.innerHTML = `
+      <div class="empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <p>No ${currentFilter === 'all' ? '' : currentFilter} items found</p>
+      </div>`;
+    return;
+  }
+  
+  for (const item of filtered) {
+    const isAnnouncement = item.type === "announcement";
+    
+    const div = document.createElement("div");
+    div.className = "item";
+    div.style.borderLeftColor = isAnnouncement ? "var(--warning)" : "var(--accent)";
+    
+    let actions = '';
+    if (!isAnnouncement) {
+      actions = `
+        <div class="action-row">
+          <button class="btn-success" onclick="replyToFeedback('${item.id}')">💬 Reply</button>
+          <button class="btn-info" onclick="updateStatus('${item.id}', 'resolved')">✓ Resolve</button>
+          <button class="btn-warning" onclick="updateStatus('${item.id}', 'approved')">Approve</button>
+          <button class="btn-danger" onclick="updateStatus('${item.id}', 'rejected')">Reject</button>
+          <button class="btn-secondary" onclick="updateStatus('${item.id}', 'flagged')">⚑ Flag</button>
+        </div>
+      `;
+    }
+    
+    div.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+        <div>
+          <b>${item.user_name || "Unknown"}</b>
+          ${isAnnouncement ? '<span class="badge badge-announcement">📢 ANNOUNCEMENT</span>' : ''}
+          <span class="department-tag">${item.department}</span>
+        </div>
+        <span class="badge badge-${item.status}">${item.status}</span>
+      </div>
+      
+      <div style="margin-bottom:12px; line-height:1.6;">${item.message}</div>
+      <div class="timestamp" style="margin-bottom:14px;">${formatDate(item.created_at)}</div>
+      
+      ${item.response ? `
+        <div class="reply-box">
+          <b style="color:var(--success); font-size:13px;">💬 Response:</b>
+          <div style="margin-top:6px; color:var(--text-secondary);">${item.response}</div>
+        </div>
+      ` : `
+        <div class="reply-box" id="reply-box-${item.id}">
+          <textarea id="reply-text-${item.id}" placeholder="Type your response..." style="margin-top:0; margin-bottom:10px; background:var(--bg-secondary);"></textarea>
+        </div>
+      `}
+      
+      ${actions}
+    `;
+    
+    adminList.appendChild(div);
+  }
+}
+
+/* ================= ADMIN: REPLY ================= */
+window.replyToFeedback = async (id) => {
+  const text = document.getElementById("reply-text-" + id)?.value;
+  if (!text || !text.trim()) {
+    alert("Please type a response first");
+    return;
+  }
+  
+  const { error } = await supabase
+    .from("feedback")
+    .update({ response: text.trim() })
+    .eq("id", id)
+    .eq("org_id", currentOrg.id);
+    
+  if (error) return alert(error.message);
+  
+  showModal("Success", "💬 Reply sent!", () => {
+    loadAdminPanel();
+  });
+};
+
+/* ================= ADMIN: UPDATE STATUS ================= */
+window.updateStatus = async (id, status) => {
+  const { error } = await supabase
+    .from("feedback")
+    .update({ status })
+    .eq("id", id)
+    .eq("org_id", currentOrg.id);
+    
+  if (error) return alert(error.message);
+  
+  loadAdminPanel();
+  updateStats();
+};
+
+/* ================= USER MANAGEMENT ================= */
+window.addUser = async () => {
+  const name = document.getElementById("newUserName").value.trim();
+  const username = document.getElementById("newUserUsername").value.trim().toLowerCase();
+  const password = document.getElementById("newUserPassword").value;
+  const role = document.getElementById("newUserRole").value;
+  const statusEl = document.getElementById("userMgmtStatus");
+  
+  if (!name || !username || !password) {
+    showStatus(statusEl, "❌ All fields required", "error");
+    return;
+  }
+  
+  if (password.length < 6) {
+    showStatus(statusEl, "❌ Password must be at least 6 characters", "error");
+    return;
+  }
+  
+  // Check username
+  const { data: existing } = await supabase.from("users").select("id").eq("username", username).single();
+  if (existing) {
+    showStatus(statusEl, "❌ Username already taken", "error");
+    return;
+  }
+  
+  const { error } = await supabase.from("users").insert({
+    org_id: currentOrg.id,
+    name,
+    username,
+    password_hash: await hashPassword(password),
+    role
+  });
+  
+  if (error) {
+    showStatus(statusEl, "❌ " + error.message, "error");
+    return;
+  }
+  
+  document.getElementById("newUserName").value = "";
+  document.getElementById("newUserUsername").value = "";
+  document.getElementById("newUserPassword").value = "";
+  showStatus(statusEl, "✅ User added successfully!", "success");
+  loadUsersList();
+};
+
+async function loadUsersList() {
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, name, username, role, created_at")
+    .eq("org_id", currentOrg.id)
+    .order("created_at", { ascending: false });
+    
+  if (error) { console.error(error); return; }
+  
+  const list = document.getElementById("usersList");
+  list.innerHTML = "";
+  
+  data?.forEach(u => {
+    const row = document.createElement("div");
+    row.className = "user-row";
+    const isSelf = u.id === currentUser.id;
+    row.innerHTML = `
+      <div>
+        <b>${u.name}</b> <span class="badge badge-${u.role}">${u.role}</span><br>
+        <small style="color:var(--text-muted);">@${u.username}</small>
+      </div>
+      ${(!isSelf && isDirector) ? `<button class="btn-danger" onclick="deleteUser('${u.id}')">Remove</button>` : ''}
+    `;
+    list.appendChild(row);
+  });
+}
+
+window.deleteUser = async (userId) => {
+  if (!confirm("Are you sure you want to remove this user?")) return;
+  
+  const { error } = await supabase
+    .from("users")
+    .delete()
+    .eq("id", userId)
+    .eq("org_id", currentOrg.id);
+    
+  if (error) return alert(error.message);
+  loadUsersList();
+};
+
+/* ================= STATS ================= */
+async function updateStats() {
+  const { data } = await supabase
+    .from("feedback")
+    .select("status")
+    .eq("org_id", currentOrg.id);
+    
+  const counts = { total: 0, pending: 0, approved: 0, resolved: 0, rejected: 0, flagged: 0 };
+  data?.forEach(item => {
+    counts.total++;
+    if (counts[item.status] !== undefined) counts[item.status]++;
+  });
+  
+  document.getElementById("statTotal").textContent = counts.total;
+  document.getElementById("statPending").textContent = counts.pending;
+  document.getElementById("statApproved").textContent = counts.approved;
+  document.getElementById("statResolved").textContent = counts.resolved;
+}
+
+/* ================= UTILITIES ================= */
+function showStatus(el, message, type) {
+  el.className = "status-" + type;
+  el.textContent = message;
+  if (type === "success") {
+    setTimeout(() => { el.textContent = ""; }, 3000);
+  }
+}
+
+function showModal(title, message, onClose) {
+  const overlay = document.getElementById("modalOverlay");
+  const content = document.getElementById("modalContent");
+  
+  content.innerHTML = `
+    <h3>${title}</h3>
+    <p style="text-align:center; color:var(--text-secondary); margin-bottom:20px;">${message}</p>
+    <div class="modal-buttons">
+      <button class="btn-primary" onclick="closeModal()">OK</button>
+    </div>
+  `;
+  
+  overlay.classList.remove("hidden");
+  window._modalCallback = onClose;
+}
+
+window.closeModal = () => {
+  document.getElementById("modalOverlay").classList.add("hidden");
+  if (window._modalCallback) {
+    window._modalCallback();
+    window._modalCallback = null;
+  }
+};
+
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+async function hashPassword(str) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* ================= INIT ================= */
+loadOrganisations();
+</script>
+
+</body>
+</html>
